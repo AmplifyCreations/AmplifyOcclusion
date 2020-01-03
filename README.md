@@ -68,9 +68,10 @@
    3) How to set up an SRP project example:
 
    3.a) Create SRP asset via Assets menu:
-         Create/Rendering/High Definition Render Pipeline Asset
-           OR
-         Create/Rendering/Lightweight Render Pipeline Asset
+   
+	   Create/Rendering/High Definition Render Pipeline Asset
+	   OR
+	   Create/Rendering/Lightweight Render Pipeline Asset
   
    3.b) Set Edit->ProjectSettings/Player/Other settings/ColorSpace to Linear (necessary for HD SRP)
   
