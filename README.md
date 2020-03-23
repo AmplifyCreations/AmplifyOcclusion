@@ -111,3 +111,11 @@
   Please refer to the following website for an up-to-date online manual:
 
     http://amplify.pt/unity/amplify-occlusion/manual
+
+# Acknowledgements
+
+  AO v2.0 was developed by the talented Mário Luzeiro:
+  
+    https://pt.linkedin.com/in/mluzeiro
+    https://twitter.com/mluzeiro
+    
