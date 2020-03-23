@@ -1,9 +1,9 @@
 # Amplify Occlusion
 
   Amplify Occlusion was the first industry-grade, full-featured screen-space ambient occlusion 
-  solution to be released on the Asset Store in 2016, at a time when Unity itself lacked a decent SSAO 
-  implementation. It managed to remain the fastest SSAO solution for Unity until Unity released a
-  built-in implementation of "Multi-scale Volumetric Occlusion" as part of their Post-processing Stack.
+  solution to be released on the Asset Store in 2016, at a time when Unity itself lacked a decent
+  SSAO implementation. It managed to remain the fastest SSAO solution for Unity released a built-in 
+  implementation of "Multi-scale Volumetric Occlusion" as part of their Post-processing Stack.
 
   The first version of this plugin was using a technique known as HBAO, or "Horizon-Based
   Ambient Occlusion", based on a 2008 paper titled "Image-Space Horizon-Based Ambient Occlusion" 
