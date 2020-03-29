@@ -1,29 +1,34 @@
 # Amplify Unity Products
-  While this package is provided, as is, for free, we develop and maintain
-  professionally created solutions used by thousands of developers. We invite
-  you to check our current projects, and to join our growing [Discord Community](https://discord.gg/SbNs7zK).
-  
- [Amplify Shader Editor](https://assetstore.unity.com/packages/tools/visual-scripting/amplify-shader-editor-68570?aid=1011lPwI&pubref=GitHub) - Award-winning node-based shader creation tool
- 
- [Amplify Impostors](https://assetstore.unity.com/packages/tools/utilities/amplify-impostors-beta-119877?aid=1011lPwI&pubref=GitHub) - 1-Click Impostor Creator
- 
- [Amplify LUT Pack](https://assetstore.unity.com/packages/vfx/shaders/fullscreen-camera-effects/amplify-lut-pack-50070?aid=1011lPwI&pubref=GitHub) - 200+ LUTs for Amplify Color and Unity PPS
- 
-# Amplify Occlusion
 
+  While this package is provided, as is, for free, we develop and maintain professionally created 
+  solutions used by thousands of developers. We invite you to check our current projects, and to 
+  join our growing [Discord Community](https://discord.gg/SbNs7zK).
+  
+  [Amplify Shader Editor](https://assetstore.unity.com/packages/tools/visual-scripting/amplify-shader-editor-68570?aid=1011lPwI&pubref=GitHub) - Award-winning node-based shader creation tool
+ 
+  [Amplify Impostors](https://assetstore.unity.com/packages/tools/utilities/amplify-impostors-beta-119877?aid=1011lPwI&pubref=GitHub) - 1-Click Impostor Creator
+ 
+  [Amplify LUT Pack](https://assetstore.unity.com/packages/vfx/shaders/fullscreen-camera-effects/amplify-lut-pack-50070?aid=1011lPwI&pubref=GitHub) - 200+ LUTs for Amplify Color and Unity PPS
+ 
+# Amplify Occlusion  
+  
   Amplify Occlusion was the first industry-grade, full-featured screen-space ambient occlusion 
   solution to be released on the Asset Store in 2016, at a time when Unity itself lacked a decent
   SSAO implementation. It managed to remain the fastest SSAO solution for Unity released a built-in 
   implementation of "Multi-scale Volumetric Occlusion" as part of their Post-processing Stack.
+  
+  <p align="center"><img src="https://i.imgur.com/mSTDg79.gif"></p>
 
   The first version of this plugin was using a technique known as HBAO, or "Horizon-Based
   Ambient Occlusion", based on a 2008 paper titled "Image-Space Horizon-Based Ambient Occlusion" 
-  by Louis Bavoil, Miguel Sainz and Rouslan Dimitrov.
+  by Louis Bavoil, Miguel Sainz and Rouslan Dimitrov.  
 
   The second version, which improved upon the first iteration on both quality and performance was
   using a technique known as GTAO, or "Ground-Truth Ambient Occlusion", based on a 2016 paper titled 
   "Practical Realtime Strategies for Accurate Indirect Occlusion" by Jorge Jimenez, Xian-Chun Wu, 
   Angelo Pesce and Adrian Jarabo.
+  
+  <p align="center"><img src="https://i.imgur.com/S4vPKuw.gif"></p>  
 
   This package was for sale on the Unity Asset Store between 2016 and 2019 with an
   average rating of 5 stars. It is now deprecated and we no longer support it, so we 
