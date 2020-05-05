@@ -40,7 +40,7 @@ namespace AmplifyOcclusion
 		private static readonly string ForumURL = "https://forum.unity.com/threads/free-introducing-amplify-occlusion-2-ground-truth-ambient-occlusion-up-to-2x-faster.399022/";
 
 		private static readonly string SiteURL = "http://amplify.pt/download/";
-		private static readonly string StoreURL = "https://assetstore.unity.com/packages/vfx/shaders/fullscreen-camera-effects/amplify-occlusion-56739";
+		private static readonly string StoreURL = "https://assetstore.unity.com/packages/vfx/shaders/fullscreen-camera-effects/amplify-occlusion-56739?aid=1011lPwI&pubref=" + RefID;
 
 		private static readonly GUIContent ResourcesTitle = new GUIContent( "Learning Resources" );
 		private static readonly GUIContent CommunityTitle = new GUIContent( "Community", "Need help? Reach us through our discord server or the offitial support Unity forum" );
@@ -59,7 +59,7 @@ namespace AmplifyOcclusion
 		GUIContent DiscordButton = null;
 		GUIContent ForumButton = null;
 
-		GUIContent AOIcon = null;
+		GUIContent Icon = null;
 		RenderTexture rt;
 
 		[NonSerialized]
@@ -132,9 +132,9 @@ namespace AmplifyOcclusion
 				m_packageRef = new PackageRef( titles, urls );
 			}
 
-			if( AOIcon == null )
+			if( Icon == null )
 			{
-				AOIcon = new GUIContent( AssetDatabase.LoadAssetAtPath<Texture2D>( AssetDatabase.GUIDToAssetPath( IconGUID ) ) );
+				Icon = new GUIContent( AssetDatabase.LoadAssetAtPath<Texture2D>( AssetDatabase.GUIDToAssetPath( IconGUID ) ) );
 			}
 		}
 
@@ -322,7 +322,7 @@ namespace AmplifyOcclusion
 						GUILayout.FlexibleSpace();
 						EditorGUILayout.BeginVertical();
 						GUILayout.Space( 7 );
-						GUILayout.Label( AOIcon );
+						GUILayout.Label( Icon );
 						EditorGUILayout.EndVertical();
 					}
 					EditorGUILayout.EndHorizontal();
