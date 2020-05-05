@@ -25,6 +25,7 @@ public class VersionInfo
 		return string.Format( "{0}.{1}.{2}", m_major, m_minor, m_release ) + ( Revision > 0 ? "r" + Revision.ToString() : "" );
 	}
 
+	public static int FullNumber { get { return Major * 100 + Minor * 10 + Release; } }
 	public int Number { get { return m_major * 100 + m_minor * 10 + m_release; } }
 
 	[SerializeField] private int m_major;
