@@ -95,6 +95,8 @@
 
    3) How to set up an SRP project example:
 
+# Note that SRP is not officially supported, use at your own risk.
+
    3.a) Create SRP asset via Assets menu:
    
 	   Create/Rendering/High Definition Render Pipeline Asset
