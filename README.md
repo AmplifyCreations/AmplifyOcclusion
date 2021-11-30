@@ -17,7 +17,7 @@
   SSAO implementation. It managed to remain the fastest SSAO solution for Unity released a built-in 
   implementation of "Multi-scale Volumetric Occlusion" as part of their Post-processing Stack.
   
-  <p align="center"><img src="https://i.imgur.com/mSTDg79.gif"></p>
+  <p align="center"><img src="http://files.amplify.pt/RT/2021/11/oc_1.jpg"></p>
 
   The first version of this plugin was using a technique known as HBAO, or "Horizon-Based
   Ambient Occlusion", based on a 2008 paper titled "Image-Space Horizon-Based Ambient Occlusion" 
@@ -28,7 +28,7 @@
   "Practical Realtime Strategies for Accurate Indirect Occlusion" by Jorge Jimenez, Xian-Chun Wu, 
   Angelo Pesce and Adrian Jarabo.
   
-  <p align="center"><img src="https://i.imgur.com/S4vPKuw.gif"></p>  
+  <p align="center"><img src="http://files.amplify.pt/RT/2021/11/oc_2.jpg"></p>  
 
   This package was for sale on the Unity Asset Store between 2016 and 2019 with an
   average rating of 5 stars. It is now deprecated and we no longer support it, so we 
