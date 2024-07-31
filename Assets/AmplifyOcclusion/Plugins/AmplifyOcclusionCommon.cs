@@ -53,18 +53,18 @@ public static class AmplifyOcclusionCommon
 	{
 		int id = Shader.PropertyToID( propertyName );
 	
-	        #if UNITY_2018_3_OR_NEWER && !UNITY_SWITCH && !UNITY_XBOXONE && !UNITY_PS4
-	        if (UnityEngine.XR.XRSettings.enabled && UnityEngine.XR.XRSettings.isDeviceActive)
-	        {
-	            cb.GetTemporaryRTArray( id, width, height, 2, 0, filterMode, format, readWrite );
-	        }
-	        else
-	        {
-	            cb.GetTemporaryRT( id, width, height, 0, filterMode, format, readWrite );
-	        }
-	        #else
-	            cb.GetTemporaryRT( id, width, height, 0, filterMode, format, readWrite );
-	        #endif
+		#if UNITY_2018_3_OR_NEWER && !UNITY_SWITCH && !UNITY_XBOXONE && !UNITY_PS4
+		if (UnityEngine.XR.XRSettings.enabled && UnityEngine.XR.XRSettings.isDeviceActive)
+		{
+			cb.GetTemporaryRTArray( id, width, height, 2, 0, filterMode, format, readWrite );
+		}
+		else
+		{
+			cb.GetTemporaryRT( id, width, height, 0, filterMode, format, readWrite );
+		}
+		#else
+			cb.GetTemporaryRT( id, width, height, 0, filterMode, format, readWrite );
+		#endif
 
 		return id;
 	}
