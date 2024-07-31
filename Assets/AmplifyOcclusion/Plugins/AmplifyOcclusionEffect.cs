@@ -474,6 +474,7 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 			m_occlusionDepthRT = AmplifyOcclusionCommon.SafeAllocateRT( "_AO_OcclusionDepthTexture",
 																		m_target.width,
 																		m_target.height,
+		  																m_targetCamera.stereoEnabled,
 																		m_occlusionRTFormat,
 																		RenderTextureReadWrite.Linear,
 																		FilterMode.Bilinear );
@@ -495,6 +496,7 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 				m_temporalAccumRT[ i ] = AmplifyOcclusionCommon.SafeAllocateRT( "_AO_TemporalAccum_" + i.ToString(),
 																				m_target.width,
 																				m_target.height,
+																				m_targetCamera.stereoEnabled,
 																				m_accumTemporalRTFormat,
 																				RenderTextureReadWrite.Linear,
 																				FilterMode.Bilinear,
@@ -509,6 +511,7 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 			m_depthMipmap = AmplifyOcclusionCommon.SafeAllocateRT( "_AO_DepthMipmap",
 																	m_target.fullWidth >> 1,
 																	m_target.fullHeight >> 1,
+		 															m_targetCamera.stereoEnabled,
 																	RenderTextureFormat.RFloat,
 																	RenderTextureReadWrite.Linear,
 																	FilterMode.Point,
@@ -844,6 +847,7 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 
 				tmpMipRT = AmplifyOcclusionCommon.SafeAllocateTemporaryRT( cb, m_tmpMipString[ i ],
 																			width, height,
+		   																	m_targetCamera.stereoEnabled,
 																			RenderTextureFormat.RFloat,
 																			RenderTextureReadWrite.Linear,
 																			FilterMode.Bilinear );
@@ -877,6 +881,7 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 
 			int tmpSmallOcclusionRT = AmplifyOcclusionCommon.SafeAllocateTemporaryRT( cb, "_AO_SmallOcclusionTexture",
 																halfWidth, halfHeight,
+																m_targetCamera.stereoEnabled,
 																m_occlusionRTFormat,
 																RenderTextureReadWrite.Linear,
 																FilterMode.Bilinear );
@@ -952,6 +957,7 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 	{
 		int tmpRT = AmplifyOcclusionCommon.SafeAllocateTemporaryRT( cb, "_AO_IntensityTmp",
 																	aSourceWidth / 4, aSourceHeight / 4,
+				 													m_targetCamera.stereoEnabled,
 																	m_motionIntensityRTFormat,
 																	RenderTextureReadWrite.Linear,
 																	FilterMode.Bilinear );
@@ -968,6 +974,7 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 
 		int tmpBlurRT = AmplifyOcclusionCommon.SafeAllocateTemporaryRT( cb, "_AO_BlurIntensityTmp",
 																		aSourceWidth / 4, aSourceHeight / 4,
+				  														m_targetCamera.stereoEnabled,
 																		m_motionIntensityRTFormat,
 																		RenderTextureReadWrite.Linear,
 																		FilterMode.Bilinear );
@@ -996,6 +1003,7 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 
 		int tmpBlurRT = AmplifyOcclusionCommon.SafeAllocateTemporaryRT( cb, "_AO_BlurTmp",
 																		aSourceWidth, aSourceHeight,
+				  														m_targetCamera.stereoEnabled,
 																		m_occlusionRTFormat,
 																		RenderTextureReadWrite.Linear,
 																		FilterMode.Bilinear );
@@ -1085,7 +1093,7 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 					int applyOcclusionRT = 0;
 					if ( useMRTBlendingFallback )
 					{
-						applyOcclusionRT = AmplifyOcclusionCommon.SafeAllocateTemporaryRT( cb, "_AO_ApplyOcclusionTexture", m_target.fullWidth, m_target.fullHeight, RenderTextureFormat.ARGB32 );
+						applyOcclusionRT = AmplifyOcclusionCommon.SafeAllocateTemporaryRT( cb, "_AO_ApplyOcclusionTexture", m_target.fullWidth, m_target.fullHeight, m_targetCamera.stereoEnabled, RenderTextureFormat.ARGB32 );
 
 						applyOcclusionTemporal[0] = applyOcclusionRT;
 						applyOcclusionTemporal[1] = new RenderTargetIdentifier( m_temporalAccumRT[ m_curTemporalIdx ] );
@@ -1149,10 +1157,12 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 			// Copy Albedo and Emission to temporary buffers
 			int gbufferAlbedoRT = AmplifyOcclusionCommon.SafeAllocateTemporaryRT( cb, "_AO_tmpAlbedo",
 																					m_target.fullWidth, m_target.fullHeight,
+					 																m_targetCamera.stereoEnabled,
 																					RenderTextureFormat.ARGB32 );
 
 			int gbufferEmissionRT = AmplifyOcclusionCommon.SafeAllocateTemporaryRT( cb, "_AO_tmpEmission",
 																					m_target.fullWidth, m_target.fullHeight,
+					 																m_targetCamera.stereoEnabled,
 																					m_temporaryEmissionRTFormat );
 
 			cb.Blit( BuiltinRenderTextureType.GBuffer0, gbufferAlbedoRT );
@@ -1237,7 +1247,7 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 				int applyOcclusionRT = 0;
 				if ( useMRTBlendingFallback )
 				{
-					applyOcclusionRT = AmplifyOcclusionCommon.SafeAllocateTemporaryRT( cb, "_AO_ApplyOcclusionTexture", m_target.fullWidth, m_target.fullHeight, RenderTextureFormat.ARGB32 );
+					applyOcclusionRT = AmplifyOcclusionCommon.SafeAllocateTemporaryRT( cb, "_AO_ApplyOcclusionTexture", m_target.fullWidth, m_target.fullHeight, m_targetCamera.stereoEnabled, RenderTextureFormat.ARGB32 );
 					applyPostEffectTargetsTemporal[ 0 ] = applyOcclusionRT;
 				}
 				else
