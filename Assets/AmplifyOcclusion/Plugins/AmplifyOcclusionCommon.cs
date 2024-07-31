@@ -53,7 +53,7 @@ public static class AmplifyOcclusionCommon
 	{
 		int id = Shader.PropertyToID( propertyName );
 	
-		#if UNITY_2018_3_OR_NEWER && !UNITY_SWITCH && !UNITY_XBOXONE && !UNITY_PS4
+	#if UNITY_2018_3_OR_NEWER && !UNITY_SWITCH && !UNITY_XBOXONE && !UNITY_PS4
 		if (UnityEngine.XR.XRSettings.enabled && UnityEngine.XR.XRSettings.isDeviceActive)
 		{
 			cb.GetTemporaryRTArray( id, width, height, 2, 0, filterMode, format, readWrite );
@@ -62,9 +62,9 @@ public static class AmplifyOcclusionCommon
 		{
 			cb.GetTemporaryRT( id, width, height, 0, filterMode, format, readWrite );
 		}
-		#else
+	#else
 			cb.GetTemporaryRT( id, width, height, 0, filterMode, format, readWrite );
-		#endif
+	#endif
 
 		return id;
 	}
@@ -95,13 +95,13 @@ public static class AmplifyOcclusionCommon
 		rt.antiAliasing = Mathf.Max( antiAliasing, 1 );
 		rt.useMipMap = aUseMipMap;
 
-		#if UNITY_2018_3_OR_NEWER && !UNITY_SWITCH && !UNITY_XBOXONE && !UNITY_PS4
+	#if UNITY_2018_3_OR_NEWER && !UNITY_SWITCH && !UNITY_XBOXONE && !UNITY_PS4
 		if (UnityEngine.XR.XRSettings.enabled && UnityEngine.XR.XRSettings.isDeviceActive)
 		{
 			rt.dimension = UnityEngine.XR.XRSettings.eyeTextureDesc.dimension;
 			rt.volumeDepth = UnityEngine.XR.XRSettings.eyeTextureDesc.volumeDepth;
 		}
-		#endif
+	#endif
 		
 		rt.Create();
 
