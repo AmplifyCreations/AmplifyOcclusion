@@ -96,12 +96,12 @@ public static class AmplifyOcclusionCommon
 		rt.useMipMap = aUseMipMap;
 
 		#if UNITY_2018_3_OR_NEWER && !UNITY_SWITCH && !UNITY_XBOXONE && !UNITY_PS4
-	        if (UnityEngine.XR.XRSettings.enabled && UnityEngine.XR.XRSettings.isDeviceActive)
-	        {
-	            rt.dimension = UnityEngine.XR.XRSettings.eyeTextureDesc.dimension;
-	            rt.volumeDepth = UnityEngine.XR.XRSettings.eyeTextureDesc.volumeDepth;
-	        }
-	        #endif
+		if (UnityEngine.XR.XRSettings.enabled && UnityEngine.XR.XRSettings.isDeviceActive)
+		{
+			rt.dimension = UnityEngine.XR.XRSettings.eyeTextureDesc.dimension;
+			rt.volumeDepth = UnityEngine.XR.XRSettings.eyeTextureDesc.volumeDepth;
+		}
+		#endif
 		
 		rt.Create();
 
