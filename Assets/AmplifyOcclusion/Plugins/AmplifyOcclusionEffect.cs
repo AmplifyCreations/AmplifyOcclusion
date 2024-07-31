@@ -413,7 +413,7 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 		{
 			for( int i = 0; i < m_temporalAccumRT.Length; i++ )
 			{
-				cb.SetRenderTarget( m_temporalAccumRT[ i ] );
+				cb.SetRenderTarget( m_temporalAccumRT[ i ], 0, CubemapFace.Unknown, -1 );
 				PerformBlit( cb, m_occlusionMat, ShaderPass.ClearTemporal );
 			}
 		}
@@ -474,6 +474,7 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 			m_occlusionDepthRT = AmplifyOcclusionCommon.SafeAllocateRT( "_AO_OcclusionDepthTexture",
 																		m_target.width,
 																		m_target.height,
+		  																m_targetCamera.stereoEnabled,
 																		m_occlusionRTFormat,
 																		RenderTextureReadWrite.Linear,
 																		FilterMode.Bilinear );
@@ -495,6 +496,7 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 				m_temporalAccumRT[ i ] = AmplifyOcclusionCommon.SafeAllocateRT( "_AO_TemporalAccum_" + i.ToString(),
 																				m_target.width,
 																				m_target.height,
+																				m_targetCamera.stereoEnabled,
 																				m_accumTemporalRTFormat,
 																				RenderTextureReadWrite.Linear,
 																				FilterMode.Bilinear,
@@ -509,6 +511,7 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 			m_depthMipmap = AmplifyOcclusionCommon.SafeAllocateRT( "_AO_DepthMipmap",
 																	m_target.fullWidth >> 1,
 																	m_target.fullHeight >> 1,
+		 															m_targetCamera.stereoEnabled,
 																	RenderTextureFormat.RFloat,
 																	RenderTextureReadWrite.Linear,
 																	FilterMode.Point,
@@ -844,12 +847,13 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 
 				tmpMipRT = AmplifyOcclusionCommon.SafeAllocateTemporaryRT( cb, m_tmpMipString[ i ],
 																			width, height,
+		   																	m_targetCamera.stereoEnabled,
 																			RenderTextureFormat.RFloat,
 																			RenderTextureReadWrite.Linear,
 																			FilterMode.Bilinear );
 
 				// _AO_CurrDepthSource was previously set
-				cb.SetRenderTarget( tmpMipRT );
+				cb.SetRenderTarget( tmpMipRT, 0, CubemapFace.Unknown, -1 );
 
 				PerformBlit( cb, m_occlusionMat, ( ( i == 0 )?ShaderPass.ScaleDownCloserDepthEven_CameraDepthTexture:ShaderPass.ScaleDownCloserDepthEven ) );
 
@@ -877,6 +881,7 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 
 			int tmpSmallOcclusionRT = AmplifyOcclusionCommon.SafeAllocateTemporaryRT( cb, "_AO_SmallOcclusionTexture",
 																halfWidth, halfHeight,
+																m_targetCamera.stereoEnabled,
 																m_occlusionRTFormat,
 																RenderTextureReadWrite.Linear,
 																FilterMode.Bilinear );
@@ -887,10 +892,10 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 																			  m_target.fullWidth / 2.0f,
 																			  m_target.fullHeight / 2.0f ) );
 
-			cb.SetRenderTarget( tmpSmallOcclusionRT );
+			cb.SetRenderTarget( tmpSmallOcclusionRT, 0, CubemapFace.Unknown, -1 );
 			PerformBlit( cb, m_occlusionMat, occlusionPass );
 
-			cb.SetRenderTarget( default( RenderTexture ) );
+			cb.SetRenderTarget( default( RenderTexture ), 0, CubemapFace.Unknown, -1 );
 			cb.EndSample( "AO 1 - ComputeOcclusion" );
 
 			if( BlurEnabled == true )
@@ -905,13 +910,13 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 
 			cb.SetGlobalVector( PropertyID._AO_Target_TexelSize, oneOverFullSize_Size );
 
-			cb.SetRenderTarget( m_occlusionDepthRT );
+			cb.SetRenderTarget( m_occlusionDepthRT, 0, CubemapFace.Unknown, -1 );
 
 			PerformBlit( cb, m_occlusionMat, ShaderPass.CombineDownsampledOcclusionDepth );
 
 			AmplifyOcclusionCommon.SafeReleaseTemporaryRT( cb, tmpSmallOcclusionRT );
 
-			cb.SetRenderTarget( default( RenderTexture ) );
+			cb.SetRenderTarget( default( RenderTexture ), 0, CubemapFace.Unknown, -1 );
 			cb.EndSample( "AO 2b - Combine" );
 		}
 		else
@@ -934,10 +939,10 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 																				  m_target.height ) );
 			}
 
-			cb.SetRenderTarget( m_occlusionDepthRT );
+			cb.SetRenderTarget( m_occlusionDepthRT, 0, CubemapFace.Unknown, -1 );
 			PerformBlit( cb, m_occlusionMat, occlusionPass );
 
-			cb.SetRenderTarget( default( RenderTexture ) );
+			cb.SetRenderTarget( default( RenderTexture ), 0, CubemapFace.Unknown, -1 );
 			cb.EndSample( "AO 1 - ComputeOcclusion" );
 
 			if( BlurEnabled == true )
@@ -952,12 +957,13 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 	{
 		int tmpRT = AmplifyOcclusionCommon.SafeAllocateTemporaryRT( cb, "_AO_IntensityTmp",
 																	aSourceWidth / 4, aSourceHeight / 4,
+				 													m_targetCamera.stereoEnabled,
 																	m_motionIntensityRTFormat,
 																	RenderTextureReadWrite.Linear,
 																	FilterMode.Bilinear );
 
 
-		cb.SetRenderTarget( tmpRT );
+		cb.SetRenderTarget( tmpRT, 0, CubemapFace.Unknown, -1 );
 		cb.SetGlobalVector( "_AO_Target_TexelSize", new Vector4( 1.0f / ( aSourceWidth / 4.0f ),
 																 1.0f / ( aSourceHeight / 4.0f ),
 																 aSourceWidth / 4.0f,
@@ -968,18 +974,19 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 
 		int tmpBlurRT = AmplifyOcclusionCommon.SafeAllocateTemporaryRT( cb, "_AO_BlurIntensityTmp",
 																		aSourceWidth / 4, aSourceHeight / 4,
+				  														m_targetCamera.stereoEnabled,
 																		m_motionIntensityRTFormat,
 																		RenderTextureReadWrite.Linear,
 																		FilterMode.Bilinear );
 
 		// Horizontal
 		cb.SetGlobalTexture( PropertyID._AO_CurrMotionIntensity, tmpRT );
-		cb.SetRenderTarget( tmpBlurRT );
+		cb.SetRenderTarget( tmpBlurRT, 0, CubemapFace.Unknown, -1 );
 		PerformBlit( cb, m_blurMat, ShaderPass.BlurHorizontalIntensity );
 
 		// Vertical
 		cb.SetGlobalTexture( PropertyID._AO_CurrMotionIntensity, tmpBlurRT );
-		cb.SetRenderTarget( tmpRT );
+		cb.SetRenderTarget( tmpRT, 0, CubemapFace.Unknown, -1 );
 		PerformBlit( cb, m_blurMat, ShaderPass.BlurVerticalIntensity );
 
 		AmplifyOcclusionCommon.SafeReleaseTemporaryRT( cb, tmpBlurRT );
@@ -996,6 +1003,7 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 
 		int tmpBlurRT = AmplifyOcclusionCommon.SafeAllocateTemporaryRT( cb, "_AO_BlurTmp",
 																		aSourceWidth, aSourceHeight,
+				  														m_targetCamera.stereoEnabled,
 																		m_occlusionRTFormat,
 																		RenderTextureReadWrite.Linear,
 																		FilterMode.Bilinear );
@@ -1008,7 +1016,7 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 
 			int blurHorizontalPass = ShaderPass.BlurHorizontal1 + ( BlurRadius - 1 ) * 2;
 
-			cb.SetRenderTarget( tmpBlurRT );
+			cb.SetRenderTarget( tmpBlurRT, 0, CubemapFace.Unknown, -1 );
 
 			PerformBlit( cb, m_blurMat, blurHorizontalPass );
 
@@ -1018,14 +1026,14 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 
 			int blurVerticalPass = ShaderPass.BlurVertical1 + ( BlurRadius - 1 ) * 2;
 
-			cb.SetRenderTarget( aSourceRT );
+			cb.SetRenderTarget( aSourceRT, 0, CubemapFace.Unknown, -1 );
 
 			PerformBlit( cb, m_blurMat, blurVerticalPass );
 		}
 
 		AmplifyOcclusionCommon.SafeReleaseTemporaryRT( cb, tmpBlurRT );
 
-		cb.SetRenderTarget( default( RenderTexture ) );
+		cb.SetRenderTarget( default( RenderTexture ), 0, CubemapFace.Unknown, -1 );
 		cb.EndSample( "AO 2 - Blur" );
 	}
 
@@ -1085,12 +1093,12 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 					int applyOcclusionRT = 0;
 					if ( useMRTBlendingFallback )
 					{
-						applyOcclusionRT = AmplifyOcclusionCommon.SafeAllocateTemporaryRT( cb, "_AO_ApplyOcclusionTexture", m_target.fullWidth, m_target.fullHeight, RenderTextureFormat.ARGB32 );
+						applyOcclusionRT = AmplifyOcclusionCommon.SafeAllocateTemporaryRT( cb, "_AO_ApplyOcclusionTexture", m_target.fullWidth, m_target.fullHeight, m_targetCamera.stereoEnabled, RenderTextureFormat.ARGB32 );
 
 						applyOcclusionTemporal[0] = applyOcclusionRT;
 						applyOcclusionTemporal[1] = new RenderTargetIdentifier( m_temporalAccumRT[ m_curTemporalIdx ] );
 
-						cb.SetRenderTarget( applyOcclusionTemporal, applyOcclusionTemporal[ 0 ] /* Not used, just to make Unity happy */ );
+						cb.SetRenderTarget( applyOcclusionTemporal, applyOcclusionTemporal[ 0 ], 0, CubemapFace.Unknown, -1 /* Not used, just to make Unity happy */ );
 						PerformBlit( cb, m_applyOcclusionMat, ShaderPass.ApplyPostEffectTemporal + getTemporalPass() ); // re-use ApplyPostEffectTemporal pass to apply without Blend to the RT.
 					}
 					else
@@ -1099,7 +1107,7 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 						applyDeferredTargetsTemporal[1] = m_applyDeferredTargets[1];
 						applyDeferredTargetsTemporal[2] = new RenderTargetIdentifier( m_temporalAccumRT[ m_curTemporalIdx ] );
 
-						cb.SetRenderTarget( applyDeferredTargetsTemporal, applyDeferredTargetsTemporal[ 0 ] /* Not used, just to make Unity happy */ );
+						cb.SetRenderTarget( applyDeferredTargetsTemporal, applyDeferredTargetsTemporal[ 0 ], 0, CubemapFace.Unknown, -1 /* Not used, just to make Unity happy */ );
 						PerformBlit( cb, m_applyOcclusionMat, ShaderPass.ApplyDeferredTemporal + getTemporalPass() );
 					}
 
@@ -1110,7 +1118,7 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 						applyOcclusionTemporal[0] = m_applyDeferredTargets[0];
 						applyOcclusionTemporal[1] = m_applyDeferredTargets[1];
 
-						cb.SetRenderTarget( applyOcclusionTemporal, applyOcclusionTemporal[ 0 ] /* Not used, just to make Unity happy */ );
+						cb.SetRenderTarget( applyOcclusionTemporal, applyOcclusionTemporal[ 0 ], 0, CubemapFace.Unknown, -1 /* Not used, just to make Unity happy */ );
 						PerformBlit( cb, m_applyOcclusionMat, ShaderPass.ApplyDeferredTemporalMultiply );
 
 						AmplifyOcclusionCommon.SafeReleaseTemporaryRT( cb, applyOcclusionRT );
@@ -1122,11 +1130,11 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 
 					RenderTargetIdentifier temporalRTid = new RenderTargetIdentifier( m_temporalAccumRT[ m_curTemporalIdx ] );
 
-					cb.SetRenderTarget( temporalRTid );
+					cb.SetRenderTarget( temporalRTid, 0, CubemapFace.Unknown, -1 );
 					PerformBlit( cb, m_occlusionMat, ShaderPass.Temporal + getTemporalPass() );
 
 					cb.SetGlobalTexture( PropertyID._AO_TemporalAccumm, temporalRTid );
-					cb.SetRenderTarget( m_applyDeferredTargets, m_applyDeferredTargets[ 0 ] /* Not used, just to make Unity happy */ );
+					cb.SetRenderTarget( m_applyDeferredTargets, m_applyDeferredTargets[ 0 ], 0, CubemapFace.Unknown, -1 /* Not used, just to make Unity happy */ );
 					PerformBlit( cb, m_applyOcclusionMat, ShaderPass.ApplyDeferredCombineFromTemporal );
 				}
 
@@ -1140,7 +1148,7 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 				cb.SetGlobalTexture( PropertyID._AO_CurrOcclusionDepth, m_occlusionDepthRT );
 
 				// Multiply Occlusion
-				cb.SetRenderTarget( m_applyDeferredTargets, m_applyDeferredTargets[ 0 ] /* Not used, just to make Unity happy */ );
+				cb.SetRenderTarget( m_applyDeferredTargets, m_applyDeferredTargets[ 0 ], 0, CubemapFace.Unknown, -1 /* Not used, just to make Unity happy */ );
 				PerformBlit( cb, m_applyOcclusionMat, ShaderPass.ApplyDeferred );
 			}
 		}
@@ -1149,10 +1157,12 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 			// Copy Albedo and Emission to temporary buffers
 			int gbufferAlbedoRT = AmplifyOcclusionCommon.SafeAllocateTemporaryRT( cb, "_AO_tmpAlbedo",
 																					m_target.fullWidth, m_target.fullHeight,
+					 																m_targetCamera.stereoEnabled,
 																					RenderTextureFormat.ARGB32 );
 
 			int gbufferEmissionRT = AmplifyOcclusionCommon.SafeAllocateTemporaryRT( cb, "_AO_tmpEmission",
 																					m_target.fullWidth, m_target.fullHeight,
+					 																m_targetCamera.stereoEnabled,
 																					m_temporaryEmissionRTFormat );
 
 			cb.Blit( BuiltinRenderTextureType.GBuffer0, gbufferAlbedoRT );
@@ -1178,7 +1188,7 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 					applyDeferredTargets_Log_Temporal[1] = m_applyDeferredTargets_Log[1];
 					applyDeferredTargets_Log_Temporal[2] = new RenderTargetIdentifier( m_temporalAccumRT[ m_curTemporalIdx ] );
 
-					cb.SetRenderTarget( applyDeferredTargets_Log_Temporal, applyDeferredTargets_Log_Temporal[ 0 ] /* Not used, just to make Unity happy */ );
+					cb.SetRenderTarget( applyDeferredTargets_Log_Temporal, applyDeferredTargets_Log_Temporal[ 0 ], 0, CubemapFace.Unknown, -1 /* Not used, just to make Unity happy */ );
 					PerformBlit( cb, m_applyOcclusionMat, ShaderPass.ApplyDeferredLogTemporal + getTemporalPass() );
 				}
 				else
@@ -1187,11 +1197,11 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 
 					RenderTargetIdentifier temporalRTid = new RenderTargetIdentifier( m_temporalAccumRT[ m_curTemporalIdx ] );
 
-					cb.SetRenderTarget( temporalRTid );
+					cb.SetRenderTarget( temporalRTid, 0, CubemapFace.Unknown, -1 );
 					PerformBlit( cb, m_occlusionMat, ShaderPass.Temporal + getTemporalPass() );
 
 					cb.SetGlobalTexture( PropertyID._AO_TemporalAccumm, temporalRTid );
-					cb.SetRenderTarget( m_applyDeferredTargets_Log, m_applyDeferredTargets_Log[ 0 ] /* Not used, just to make Unity happy */ );
+					cb.SetRenderTarget( m_applyDeferredTargets_Log, m_applyDeferredTargets_Log[ 0 ], 0, CubemapFace.Unknown, -1 /* Not used, just to make Unity happy */ );
 					PerformBlit( cb, m_applyOcclusionMat, ShaderPass.ApplyDeferredLogCombineFromTemporal );
 				}
 
@@ -1204,7 +1214,7 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 			{
 				cb.SetGlobalTexture( PropertyID._AO_CurrOcclusionDepth, m_occlusionDepthRT );
 
-				cb.SetRenderTarget( m_applyDeferredTargets_Log, m_applyDeferredTargets_Log[ 0 ] /* Not used, just to make Unity happy */ );
+				cb.SetRenderTarget( m_applyDeferredTargets_Log, m_applyDeferredTargets_Log[ 0 ], 0, CubemapFace.Unknown, -1 /* Not used, just to make Unity happy */ );
 				PerformBlit( cb, m_applyOcclusionMat, ShaderPass.ApplyDeferredLog );
 			}
 
@@ -1212,7 +1222,7 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 			AmplifyOcclusionCommon.SafeReleaseTemporaryRT( cb, gbufferEmissionRT );
 		}
 
-		cb.SetRenderTarget( default( RenderTexture ) );
+		cb.SetRenderTarget( default( RenderTexture ), 0, CubemapFace.Unknown, -1 );
 		cb.EndSample( "AO 3 - ApplyDeferred" );
 	}
 
@@ -1237,7 +1247,7 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 				int applyOcclusionRT = 0;
 				if ( useMRTBlendingFallback )
 				{
-					applyOcclusionRT = AmplifyOcclusionCommon.SafeAllocateTemporaryRT( cb, "_AO_ApplyOcclusionTexture", m_target.fullWidth, m_target.fullHeight, RenderTextureFormat.ARGB32 );
+					applyOcclusionRT = AmplifyOcclusionCommon.SafeAllocateTemporaryRT( cb, "_AO_ApplyOcclusionTexture", m_target.fullWidth, m_target.fullHeight, m_targetCamera.stereoEnabled, RenderTextureFormat.ARGB32 );
 					applyPostEffectTargetsTemporal[ 0 ] = applyOcclusionRT;
 				}
 				else
@@ -1247,14 +1257,14 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 
 				applyPostEffectTargetsTemporal[1] = new RenderTargetIdentifier( m_temporalAccumRT[ m_curTemporalIdx ] );
 
-				cb.SetRenderTarget( applyPostEffectTargetsTemporal, applyPostEffectTargetsTemporal[ 0 ] /* Not used, just to make Unity happy */ );
+				cb.SetRenderTarget( applyPostEffectTargetsTemporal, applyPostEffectTargetsTemporal[ 0 ], 0, CubemapFace.Unknown, -1 /* Not used, just to make Unity happy */ );
 				PerformBlit( cb, m_applyOcclusionMat, ShaderPass.ApplyPostEffectTemporal + getTemporalPass() );
 
 				if ( useMRTBlendingFallback )
 				{
 					cb.SetGlobalTexture( "_AO_ApplyOcclusionTexture", applyOcclusionRT );
 
-					cb.SetRenderTarget( BuiltinRenderTextureType.CameraTarget );
+					cb.SetRenderTarget( BuiltinRenderTextureType.CameraTarget, 0, CubemapFace.Unknown, -1 );
 					PerformBlit( cb, m_applyOcclusionMat, ShaderPass.ApplyPostEffectTemporalMultiply );
 
 					AmplifyOcclusionCommon.SafeReleaseTemporaryRT( cb, applyOcclusionRT );
@@ -1266,11 +1276,11 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 
 				RenderTargetIdentifier temporalRTid = new RenderTargetIdentifier( m_temporalAccumRT[ m_curTemporalIdx ] );
 
-				cb.SetRenderTarget( temporalRTid );
+				cb.SetRenderTarget( temporalRTid, 0, CubemapFace.Unknown, -1 );
 				PerformBlit( cb, m_occlusionMat, ShaderPass.Temporal + getTemporalPass() );
 
 				cb.SetGlobalTexture( PropertyID._AO_TemporalAccumm, temporalRTid );
-				cb.SetRenderTarget( BuiltinRenderTextureType.CameraTarget );
+				cb.SetRenderTarget( BuiltinRenderTextureType.CameraTarget, 0, CubemapFace.Unknown, -1 );
 				PerformBlit( cb, m_applyOcclusionMat, ShaderPass.ApplyCombineFromTemporal );
 			}
 
@@ -1283,11 +1293,11 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 		{
 			cb.SetGlobalTexture( PropertyID._AO_CurrOcclusionDepth, m_occlusionDepthRT );
 
-			cb.SetRenderTarget( BuiltinRenderTextureType.CameraTarget );
+			cb.SetRenderTarget( BuiltinRenderTextureType.CameraTarget, 0, CubemapFace.Unknown, -1 );
 			PerformBlit( cb, m_applyOcclusionMat, ShaderPass.ApplyPostEffect );
 		}
 
-		cb.SetRenderTarget( default( RenderTexture ) );
+		cb.SetRenderTarget( default( RenderTexture ), 0, CubemapFace.Unknown, -1 );
 		cb.EndSample( "AO 3 - ApplyPostEffect" );
 	}
 
@@ -1312,7 +1322,7 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 				applyDebugTargetsTemporal[0] = BuiltinRenderTextureType.CameraTarget;
 				applyDebugTargetsTemporal[1] = new RenderTargetIdentifier( m_temporalAccumRT[ m_curTemporalIdx ] );
 
-				cb.SetRenderTarget( applyDebugTargetsTemporal, applyDebugTargetsTemporal[ 0 ] /* Not used, just to make Unity happy */ );
+				cb.SetRenderTarget( applyDebugTargetsTemporal, applyDebugTargetsTemporal[ 0 ], 0, CubemapFace.Unknown, -1 /* Not used, just to make Unity happy */ );
 				PerformBlit( cb, m_applyOcclusionMat, ShaderPass.ApplyDebugTemporal + getTemporalPass() );
 			}
 			else
@@ -1321,11 +1331,11 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 
 				RenderTargetIdentifier temporalRTid = new RenderTargetIdentifier( m_temporalAccumRT[ m_curTemporalIdx ] );
 
-				cb.SetRenderTarget( temporalRTid );
+				cb.SetRenderTarget( temporalRTid, 0, CubemapFace.Unknown, -1 );
 				PerformBlit( cb, m_occlusionMat, ShaderPass.Temporal + getTemporalPass() );
 
 				cb.SetGlobalTexture( PropertyID._AO_TemporalAccumm, temporalRTid );
-				cb.SetRenderTarget( BuiltinRenderTextureType.CameraTarget );
+				cb.SetRenderTarget( BuiltinRenderTextureType.CameraTarget, 0, CubemapFace.Unknown, -1 );
 				PerformBlit( cb, m_applyOcclusionMat, ShaderPass.ApplyDebugCombineFromTemporal );
 			}
 
@@ -1338,11 +1348,11 @@ public class AmplifyOcclusionEffect : MonoBehaviour
 		{
 			cb.SetGlobalTexture( PropertyID._AO_CurrOcclusionDepth, m_occlusionDepthRT );
 
-			cb.SetRenderTarget( BuiltinRenderTextureType.CameraTarget );
+			cb.SetRenderTarget( BuiltinRenderTextureType.CameraTarget, 0, CubemapFace.Unknown, -1 );
 			PerformBlit( cb, m_applyOcclusionMat, ShaderPass.ApplyDebug );
 		}
 
-		cb.SetRenderTarget( default( RenderTexture ) );
+		cb.SetRenderTarget( default( RenderTexture ), 0, CubemapFace.Unknown, -1 );
 		cb.EndSample( "AO 3 - ApplyDebug" );
 	}
 

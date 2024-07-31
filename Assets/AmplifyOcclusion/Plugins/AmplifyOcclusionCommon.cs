@@ -47,13 +47,25 @@ public static class AmplifyOcclusionCommon
 
 	public static int SafeAllocateTemporaryRT( CommandBuffer cb, string propertyName,
 												int width, int height,
+						  						bool stereo,
 												RenderTextureFormat format = RenderTextureFormat.Default,
 												RenderTextureReadWrite readWrite = RenderTextureReadWrite.Default,
 												FilterMode filterMode = FilterMode.Point )
 	{
 		int id = Shader.PropertyToID( propertyName );
-
+	
+	#if UNITY_2018_3_OR_NEWER && !UNITY_SWITCH && !UNITY_XBOXONE && !UNITY_PS4
+		if (stereo && UnityEngine.XR.XRSettings.stereoRenderingMode == UnityEngine.XR.XRSettings.StereoRenderingMode.SinglePassInstanced)
+		{
+			cb.GetTemporaryRTArray( id, width, height, UnityEngine.XR.XRSettings.eyeTextureDesc.volumeDepth, 0, filterMode, format, readWrite );
+		}
+		else
+		{
+			cb.GetTemporaryRT( id, width, height, 0, filterMode, format, readWrite );
+		}
+	#else
 		cb.GetTemporaryRT( id, width, height, 0, filterMode, format, readWrite );
+	#endif
 
 		return id;
 	}
@@ -67,6 +79,7 @@ public static class AmplifyOcclusionCommon
 
 	public static RenderTexture SafeAllocateRT(	string name,
 												int width, int height,
+						   						bool stereo,
 												RenderTextureFormat format,
 												RenderTextureReadWrite readWrite,
 												FilterMode filterMode = FilterMode.Point,
@@ -83,6 +96,15 @@ public static class AmplifyOcclusionCommon
 		rt.wrapMode = TextureWrapMode.Clamp;
 		rt.antiAliasing = Mathf.Max( antiAliasing, 1 );
 		rt.useMipMap = aUseMipMap;
+
+	#if UNITY_2018_3_OR_NEWER && !UNITY_SWITCH && !UNITY_XBOXONE && !UNITY_PS4
+		if (stereo && UnityEngine.XR.XRSettings.stereoRenderingMode == UnityEngine.XR.XRSettings.StereoRenderingMode.SinglePassInstanced)
+		{
+			rt.dimension = TextureDimension.Tex2DArray;
+			rt.volumeDepth = UnityEngine.XR.XRSettings.eyeTextureDesc.volumeDepth;
+		}
+	#endif
+		
 		rt.Create();
 
 		return rt;
