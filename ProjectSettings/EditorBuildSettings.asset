@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/AmplifyOcclusion/Samples/Demo.unity
+    guid: b5085214b2557c742aab536b95b148d9
   m_configObjects: {}
