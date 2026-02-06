@@ -132,7 +132,7 @@
 
 # Acknowledgements
 
-  AO v2.0 was developed by the talented Mário Luzeiro:
+  Version 2 was developed by the talented Mário Luzeiro:
   
     https://pt.linkedin.com/in/mluzeiro
     https://twitter.com/mluzeiro
