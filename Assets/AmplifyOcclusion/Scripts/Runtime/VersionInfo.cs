@@ -11,8 +11,8 @@ namespace AmplifyOcclusion
 public class VersionInfo
 {
 	public const byte Major = 2;
-	public const byte Minor = 0;
-	public const byte Release = 8;
+	public const byte Minor = 1;
+	public const byte Release = 0;
 	public const byte Revision = 0;
 
 	public static string StaticToString()
