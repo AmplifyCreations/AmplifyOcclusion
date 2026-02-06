@@ -786,23 +786,6 @@ namespace AmplifyOcclusion
 			Profiler.EndSample();
 		}
 
-
-		void OnPostRender()
-		{
-			if ( m_occlusionDepthRT != null )
-			{
-				m_occlusionDepthRT.MarkRestoreExpected();
-			}
-			if ( m_temporalAccumRT != null )
-			{
-				foreach ( var rt in m_temporalAccumRT )
-				{
-					rt.MarkRestoreExpected();
-				}
-			}
-		}
-
-
 		private RenderTexture m_occlusionDepthRT = null;
 		private RenderTexture[] m_temporalAccumRT = null;
 		private RenderTexture m_depthMipmap = null;
@@ -813,6 +796,7 @@ namespace AmplifyOcclusion
 
 		private string[] m_tmpMipString = null;
 		private int m_numberMips = 0;
+
 		private void commandBuffer_FillComputeOcclusion( CommandBuffer cb )
 		{
 			cb.BeginSample( "AO 1 - ComputeOcclusion" );

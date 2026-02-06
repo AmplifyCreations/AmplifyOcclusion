@@ -40,7 +40,7 @@ Minimum Requirements
 
   Software
 
-    Unity 2019.4 LTS
+    Unity 2021.3 LTS
 
 Quick Guide
 
