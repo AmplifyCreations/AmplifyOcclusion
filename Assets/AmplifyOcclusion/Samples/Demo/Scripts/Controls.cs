@@ -15,13 +15,12 @@ public class Controls : MonoBehaviour
 	Color shadowColor = new Color( 0, 0, 0, 0.7f );
 	Vector2 shadowOffset = new Vector2( 1.5f, 1.5f );
 
-	void ShadowLabel( string text, GUIStyle style = null )
+	void ShadowLabel( string text, params GUILayoutOption[] options )
 	{
-		if ( style == null )
-			style = GUI.skin.label;
+		var style = GUI.skin.label;
 
 		// Layout
-		GUILayout.Label( text, style );
+		GUILayout.Label( text, style, options );
 
 		// Draw shadow + main text
 		Rect r = GUILayoutUtility.GetLastRect();
@@ -40,11 +39,11 @@ public class Controls : MonoBehaviour
 		GUI.color = oldColor;
 	}
 
-	bool ShadowToggle( bool value, string text, GUIStyle style = null, params GUILayoutOption[] options )
+	bool ShadowToggle( bool value, string text, params GUILayoutOption[] options )
 	{
-		if ( style == null )
-			style = GUI.skin.toggle;
+		var style = GUI.skin.toggle;
 
+		// Layout
 		GUI.color = new Color( GUI.color.r, GUI.color.g, GUI.color.b, 0 );
 		bool newValue = GUILayout.Toggle( value, text, style, options );
 		GUI.color = new Color( GUI.color.r, GUI.color.g, GUI.color.b, 1 );
@@ -60,7 +59,7 @@ public class Controls : MonoBehaviour
 
 		Color oldColor = GUI.color;
 
-		GUI.Toggle( r, value, GUIContent.none );
+		GUI.Toggle( r, value, GUIContent.none, style );
 
 		// Shadow
 		GUI.color = shadowColor;
@@ -88,11 +87,11 @@ public class Controls : MonoBehaviour
 		GUILayout.BeginHorizontal();
 		GUILayout.Space( 5 );
 		GUILayout.BeginVertical();
-		occlusion.enabled = ShadowToggle( occlusion.enabled, " Occlusion Enabled" );
+		occlusion.enabled = ShadowToggle( occlusion.enabled, "AO Enabled" );
 		GUILayout.Space( 10 );
-		occlusion.ApplyMethod = ShadowToggle( ( occlusion.ApplyMethod == POST ), " Standard Post-effect" ) ? POST : occlusion.ApplyMethod;
-		occlusion.ApplyMethod = ShadowToggle( ( occlusion.ApplyMethod == DEFERRED ), " Deferred Injection" ) ? DEFERRED : occlusion.ApplyMethod;
-		occlusion.ApplyMethod = ShadowToggle( ( occlusion.ApplyMethod == DEBUG ), " Debug Mode" ) ? DEBUG : occlusion.ApplyMethod;
+		occlusion.ApplyMethod = ShadowToggle( ( occlusion.ApplyMethod == POST ), "Post Effect" ) ? POST : occlusion.ApplyMethod;
+		occlusion.ApplyMethod = ShadowToggle( ( occlusion.ApplyMethod == DEFERRED ), "Deferred Injection" ) ? DEFERRED : occlusion.ApplyMethod;
+		occlusion.ApplyMethod = ShadowToggle( ( occlusion.ApplyMethod == DEBUG ), "Debug" ) ? DEBUG : occlusion.ApplyMethod;
 		GUILayout.EndVertical();
 
 		GUILayout.FlexibleSpace();
@@ -103,27 +102,12 @@ public class Controls : MonoBehaviour
 		GUILayout.BeginHorizontal();
 		GUILayout.BeginVertical();
 		GUILayout.Space( -3 );
-		ShadowLabel( "Intensity     " );
+		ShadowLabel( "Intensity", GUILayout.Width( 55 ) );
 		GUILayout.EndVertical();
-		occlusion.Intensity = GUILayout.HorizontalSlider( occlusion.Intensity, 0.0f, 1.0f, GUILayout.Width( 80 ) );
-		GUILayout.Space( 5 );
+		occlusion.Intensity = GUILayout.HorizontalSlider( occlusion.Intensity, 0.0f, 1.0f, GUILayout.Width( 60 ) );
 		GUILayout.BeginVertical();
 		GUILayout.Space( -3 );
-		GUILayout.Label( " " + occlusion.Intensity.ToString( "0.00" ), GUILayout.Width( 60 ) );
-		GUILayout.EndVertical();
-		GUILayout.Space( 5 );
-		GUILayout.EndHorizontal();
-
-		GUILayout.BeginHorizontal();
-		GUILayout.BeginVertical();
-		GUILayout.Space( -3 );
-		ShadowLabel( "Power Exp. " );
-		GUILayout.EndVertical();
-		occlusion.PowerExponent = GUILayout.HorizontalSlider( occlusion.PowerExponent, 0.0001f, 6.0f, GUILayout.Width( 80 ) );
-		GUILayout.Space( 5 );
-		GUILayout.BeginVertical();
-		GUILayout.Space( -3 );
-		GUILayout.Label( " " + occlusion.PowerExponent.ToString( "0.00" ), GUILayout.Width( 60 ) );
+		GUILayout.Label( " " + occlusion.Intensity.ToString( "0.00" ), GUILayout.Width( 30 ) );
 		GUILayout.EndVertical();
 		GUILayout.Space( 5 );
 		GUILayout.EndHorizontal();
@@ -131,13 +115,12 @@ public class Controls : MonoBehaviour
 		GUILayout.BeginHorizontal();
 		GUILayout.BeginVertical();
 		GUILayout.Space( -3 );
-		ShadowLabel( "Radius        " );
+		ShadowLabel( "Power", GUILayout.Width( 55 ) );
 		GUILayout.EndVertical();
-		occlusion.Radius = GUILayout.HorizontalSlider( occlusion.Radius, 0.1f, 10.0f, GUILayout.Width( 80 ) );
-		GUILayout.Space( 5 );
+		occlusion.PowerExponent = GUILayout.HorizontalSlider( occlusion.PowerExponent, 0.0001f, 6.0f, GUILayout.Width( 60 ) );
 		GUILayout.BeginVertical();
 		GUILayout.Space( -3 );
-		GUILayout.Label( " " + occlusion.Radius.ToString( "0.00" ), GUILayout.Width( 60 ) );
+		GUILayout.Label( " " + occlusion.PowerExponent.ToString( "0.00" ), GUILayout.Width( 30 ) );
 		GUILayout.EndVertical();
 		GUILayout.Space( 5 );
 		GUILayout.EndHorizontal();
@@ -145,13 +128,25 @@ public class Controls : MonoBehaviour
 		GUILayout.BeginHorizontal();
 		GUILayout.BeginVertical();
 		GUILayout.Space( -3 );
-		ShadowLabel( "Quality        " );
+		ShadowLabel( "Radius", GUILayout.Width( 55 ) );
 		GUILayout.EndVertical();
-		occlusion.SampleCount = ( SampleCountLevel ) ( ( int ) GUILayout.HorizontalSlider( ( float ) occlusion.SampleCount, 0.0f, 3.0f, GUILayout.Width( 80 ) ) );
-		GUILayout.Space( 5 );
+		occlusion.Radius = GUILayout.HorizontalSlider( occlusion.Radius, 0.1f, 10.0f, GUILayout.Width( 60 ) );
 		GUILayout.BeginVertical();
 		GUILayout.Space( -3 );
-		GUILayout.Label( " " + occlusion.SampleCount.ToString(), GUILayout.Width( 60 ) );
+		GUILayout.Label( " " + occlusion.Radius.ToString( "0.00" ), GUILayout.Width( 30 ) );
+		GUILayout.EndVertical();
+		GUILayout.Space( 5 );
+		GUILayout.EndHorizontal();
+
+		GUILayout.BeginHorizontal();
+		GUILayout.BeginVertical();
+		GUILayout.Space( -3 );
+		ShadowLabel( "Quality", GUILayout.Width( 55 ) );
+		GUILayout.EndVertical();
+		occlusion.SampleCount = ( SampleCountLevel ) ( ( int ) GUILayout.HorizontalSlider( ( float ) occlusion.SampleCount, 0.0f, 3.0f, GUILayout.Width( 60 ) ) );
+		GUILayout.BeginVertical();
+		GUILayout.Space( -3 );
+		GUILayout.Label( "   " + ( ( int )occlusion.SampleCount + 1 ), GUILayout.Width( 30 ) );
 		GUILayout.EndVertical();
 		GUILayout.Space( 5 );
 		GUILayout.EndHorizontal();
