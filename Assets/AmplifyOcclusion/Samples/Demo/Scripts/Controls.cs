@@ -2,160 +2,163 @@ using UnityEngine;
 using System.Collections;
 using AmplifyOcclusion;
 
-[ExecuteInEditMode]
-public class Controls : MonoBehaviour
+namespace AmplifyOcclusion.Demo
 {
-	public AmplifyOcclusionEffect occlusion;
-
-	const AmplifyOcclusionEffect.ApplicationMethod POST = AmplifyOcclusionEffect.ApplicationMethod.PostEffect;
-	const AmplifyOcclusionEffect.ApplicationMethod DEFERRED = AmplifyOcclusionEffect.ApplicationMethod.Deferred;
-	const AmplifyOcclusionEffect.ApplicationMethod DEBUG = AmplifyOcclusionEffect.ApplicationMethod.Debug;
-
-	// Shadow settings
-	Color shadowColor = new Color( 0, 0, 0, 0.7f );
-	Vector2 shadowOffset = new Vector2( 1.5f, 1.5f );
-
-	void ShadowLabel( string text, params GUILayoutOption[] options )
+	[ExecuteInEditMode]
+	public class Controls : MonoBehaviour
 	{
-		var style = GUI.skin.label;
+		public AmplifyOcclusionEffect occlusion;
 
-		// Layout
-		GUILayout.Label( text, style, options );
+		const AmplifyOcclusionEffect.ApplicationMethod POST = AmplifyOcclusionEffect.ApplicationMethod.PostEffect;
+		const AmplifyOcclusionEffect.ApplicationMethod DEFERRED = AmplifyOcclusionEffect.ApplicationMethod.Deferred;
+		const AmplifyOcclusionEffect.ApplicationMethod DEBUG = AmplifyOcclusionEffect.ApplicationMethod.Debug;
 
-		// Draw shadow + main text
-		Rect r = GUILayoutUtility.GetLastRect();
+		// Shadow settings
+		Color shadowColor = new Color( 0, 0, 0, 0.7f );
+		Vector2 shadowOffset = new Vector2( 1.5f, 1.5f );
 
-		Color oldColor = GUI.color;
+		void ShadowLabel( string text, params GUILayoutOption[] options )
+		{
+			var style = GUI.skin.label;
 
-		GUI.color = shadowColor;
-		Rect rs = r;
-		rs.x += shadowOffset.x;
-		rs.y += shadowOffset.y;
-		GUI.Label( rs, text, style );
+			// Layout
+			GUILayout.Label( text, style, options );
 
-		GUI.color = Color.white;
-		GUI.Label( r, text, style );
+			// Draw shadow + main text
+			Rect r = GUILayoutUtility.GetLastRect();
 
-		GUI.color = oldColor;
-	}
+			Color oldColor = GUI.color;
 
-	bool ShadowToggle( bool value, string text, params GUILayoutOption[] options )
-	{
-		var style = GUI.skin.toggle;
+			GUI.color = shadowColor;
+			Rect rs = r;
+			rs.x += shadowOffset.x;
+			rs.y += shadowOffset.y;
+			GUI.Label( rs, text, style );
 
-		// Layout
-		GUI.color = new Color( GUI.color.r, GUI.color.g, GUI.color.b, 0 );
-		bool newValue = GUILayout.Toggle( value, text, style, options );
-		GUI.color = new Color( GUI.color.r, GUI.color.g, GUI.color.b, 1 );
+			GUI.color = Color.white;
+			GUI.Label( r, text, style );
 
-		Rect r = GUILayoutUtility.GetLastRect();
-		float checkSize = style.CalcSize( new GUIContent( " " ) ).y; // decent approximation
+			GUI.color = oldColor;
+		}
 
-		Rect textRect = r;
-		textRect.xMin += checkSize + 6f;
-		textRect.width += 3f;
-		textRect.height += 3f;
+		bool ShadowToggle( bool value, string text, params GUILayoutOption[] options )
+		{
+			var style = GUI.skin.toggle;
 
-		Color oldColor = GUI.color;
+			// Layout
+			GUI.color = new Color( GUI.color.r, GUI.color.g, GUI.color.b, 0 );
+			bool newValue = GUILayout.Toggle( value, text, style, options );
+			GUI.color = new Color( GUI.color.r, GUI.color.g, GUI.color.b, 1 );
 
-		GUI.Toggle( r, value, GUIContent.none, style );
+			Rect r = GUILayoutUtility.GetLastRect();
+			float checkSize = style.CalcSize( new GUIContent( " " ) ).y; // decent approximation
 
-		// Shadow
-		GUI.color = shadowColor;
-		Rect rs = textRect;
-		rs.x += shadowOffset.x;
-		rs.y += shadowOffset.y;
-		GUI.Label( rs, text, GUI.skin.label );
+			Rect textRect = r;
+			textRect.xMin += checkSize + 6f;
+			textRect.width += 3f;
+			textRect.height += 3f;
 
-		// Main
-		GUI.color = Color.white;
-		GUI.Label( textRect, text, GUI.skin.label );
+			Color oldColor = GUI.color;
 
-		GUI.color = oldColor;
+			GUI.Toggle( r, value, GUIContent.none, style );
 
-		return newValue;
-	}
+			// Shadow
+			GUI.color = shadowColor;
+			Rect rs = textRect;
+			rs.x += shadowOffset.x;
+			rs.y += shadowOffset.y;
+			GUI.Label( rs, text, GUI.skin.label );
 
-	void OnGUI()
-	{
-		float scale = 2.0f;
-		var oldMatrix = GUI.matrix;
-		GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, Vector3.one * scale);
-		GUILayout.BeginArea(new Rect(0, 0, Screen.width / scale, Screen.height / scale));
+			// Main
+			GUI.color = Color.white;
+			GUI.Label( textRect, text, GUI.skin.label );
 
-		GUILayout.BeginHorizontal();
-		GUILayout.Space( 5 );
-		GUILayout.BeginVertical();
+			GUI.color = oldColor;
 
-		GUI.enabled = true;
-		occlusion.enabled = ShadowToggle( occlusion.enabled, "AO Enabled" );
-		GUI.enabled = occlusion.enabled;
+			return newValue;
+		}
 
-		GUILayout.Space( 10 );
-		occlusion.ApplyMethod = ShadowToggle( ( occlusion.ApplyMethod == POST ), "Post Effect" ) ? POST : occlusion.ApplyMethod;
-		occlusion.ApplyMethod = ShadowToggle( ( occlusion.ApplyMethod == DEFERRED ), "Deferred Injection" ) ? DEFERRED : occlusion.ApplyMethod;
-		occlusion.ApplyMethod = ShadowToggle( ( occlusion.ApplyMethod == DEBUG ), "Debug" ) ? DEBUG : occlusion.ApplyMethod;
-		GUILayout.EndVertical();
+		void OnGUI()
+		{
+			float scale = 2.0f;
+			var oldMatrix = GUI.matrix;
+			GUI.matrix = Matrix4x4.TRS( Vector3.zero, Quaternion.identity, Vector3.one * scale );
+			GUILayout.BeginArea( new Rect( 0, 0, Screen.width / scale, Screen.height / scale ) );
 
-		GUILayout.FlexibleSpace();
+			GUILayout.BeginHorizontal();
+			GUILayout.Space( 5 );
+			GUILayout.BeginVertical();
 
-		GUILayout.BeginVertical();
-		GUILayout.Space( 5 );
+			GUI.enabled = true;
+			occlusion.enabled = ShadowToggle( occlusion.enabled, "AO Enabled" );
+			GUI.enabled = occlusion.enabled;
 
-		GUILayout.BeginHorizontal();
-		GUILayout.BeginVertical();
-		GUILayout.Space( -3 );
-		GUILayout.BeginHorizontal();
-		GUILayout.FlexibleSpace();
-		ShadowLabel( "Intensity", GUILayout.Width( 53 ) );
-		GUILayout.EndHorizontal();
-		GUILayout.EndVertical();
-		occlusion.Intensity = GUILayout.HorizontalSlider( occlusion.Intensity, 0.0f, 1.0f, GUILayout.Width( 60 ) );
-		GUILayout.Space( 5 );
-		GUILayout.EndHorizontal();
+			GUILayout.Space( 10 );
+			occlusion.ApplyMethod = ShadowToggle( ( occlusion.ApplyMethod == POST ), "Post Effect" ) ? POST : occlusion.ApplyMethod;
+			occlusion.ApplyMethod = ShadowToggle( ( occlusion.ApplyMethod == DEFERRED ), "Deferred Injection" ) ? DEFERRED : occlusion.ApplyMethod;
+			occlusion.ApplyMethod = ShadowToggle( ( occlusion.ApplyMethod == DEBUG ), "Debug" ) ? DEBUG : occlusion.ApplyMethod;
+			GUILayout.EndVertical();
 
-		GUILayout.BeginHorizontal();
-		GUILayout.BeginVertical();
-		GUILayout.Space( -3 );
-		GUILayout.BeginHorizontal();
-		GUILayout.FlexibleSpace();
-		ShadowLabel( "Power", GUILayout.Width( 40 ) );
-		GUILayout.EndHorizontal();
-		GUILayout.EndVertical();
-		occlusion.PowerExponent = GUILayout.HorizontalSlider( occlusion.PowerExponent, 0.0001f, 6.0f, GUILayout.Width( 60 ) );
-		GUILayout.Space( 5 );
-		GUILayout.EndHorizontal();
+			GUILayout.FlexibleSpace();
 
-		GUILayout.BeginHorizontal();
-		GUILayout.BeginVertical();
-		GUILayout.Space( -3 );
-		GUILayout.BeginHorizontal();
-		GUILayout.FlexibleSpace();
-		ShadowLabel( "Radius", GUILayout.Width( 43 ) );
-		GUILayout.EndHorizontal();
-		GUILayout.EndVertical();
-		occlusion.Radius = GUILayout.HorizontalSlider( occlusion.Radius, 0.1f, 10.0f, GUILayout.Width( 60 ) );
+			GUILayout.BeginVertical();
+			GUILayout.Space( 5 );
 
-		GUILayout.Space( 5 );
-		GUILayout.EndHorizontal();
+			GUILayout.BeginHorizontal();
+			GUILayout.BeginVertical();
+			GUILayout.Space( -3 );
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			ShadowLabel( "Intensity", GUILayout.Width( 53 ) );
+			GUILayout.EndHorizontal();
+			GUILayout.EndVertical();
+			occlusion.Intensity = GUILayout.HorizontalSlider( occlusion.Intensity, 0.0f, 1.0f, GUILayout.Width( 60 ) );
+			GUILayout.Space( 5 );
+			GUILayout.EndHorizontal();
 
-		GUILayout.BeginHorizontal();
-		GUILayout.BeginVertical();
-		GUILayout.Space( -3 );
-		GUILayout.BeginHorizontal();
-		GUILayout.FlexibleSpace();
-		ShadowLabel( "Quality", GUILayout.Width( 45 ) );
-		GUILayout.EndHorizontal();
-		GUILayout.EndVertical();
-		occlusion.SampleCount = ( SampleCountLevel ) ( ( int ) GUILayout.HorizontalSlider( ( float ) occlusion.SampleCount, 0.0f, 3.0f, GUILayout.Width( 60 ) ) );
-		GUILayout.Space( 5 );
-		GUILayout.EndHorizontal();
+			GUILayout.BeginHorizontal();
+			GUILayout.BeginVertical();
+			GUILayout.Space( -3 );
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			ShadowLabel( "Power", GUILayout.Width( 40 ) );
+			GUILayout.EndHorizontal();
+			GUILayout.EndVertical();
+			occlusion.PowerExponent = GUILayout.HorizontalSlider( occlusion.PowerExponent, 0.0001f, 6.0f, GUILayout.Width( 60 ) );
+			GUILayout.Space( 5 );
+			GUILayout.EndHorizontal();
 
-		GUILayout.EndVertical();
+			GUILayout.BeginHorizontal();
+			GUILayout.BeginVertical();
+			GUILayout.Space( -3 );
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			ShadowLabel( "Radius", GUILayout.Width( 43 ) );
+			GUILayout.EndHorizontal();
+			GUILayout.EndVertical();
+			occlusion.Radius = GUILayout.HorizontalSlider( occlusion.Radius, 0.1f, 10.0f, GUILayout.Width( 60 ) );
 
-		GUILayout.EndHorizontal();
+			GUILayout.Space( 5 );
+			GUILayout.EndHorizontal();
 
-		GUILayout.EndArea();
-		GUI.matrix = oldMatrix;
+			GUILayout.BeginHorizontal();
+			GUILayout.BeginVertical();
+			GUILayout.Space( -3 );
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			ShadowLabel( "Quality", GUILayout.Width( 45 ) );
+			GUILayout.EndHorizontal();
+			GUILayout.EndVertical();
+			occlusion.SampleCount = ( SampleCountLevel )( ( int )GUILayout.HorizontalSlider( ( float )occlusion.SampleCount, 0.0f, 3.0f, GUILayout.Width( 60 ) ) );
+			GUILayout.Space( 5 );
+			GUILayout.EndHorizontal();
+
+			GUILayout.EndVertical();
+
+			GUILayout.EndHorizontal();
+
+			GUILayout.EndArea();
+			GUI.matrix = oldMatrix;
+		}
 	}
 }
