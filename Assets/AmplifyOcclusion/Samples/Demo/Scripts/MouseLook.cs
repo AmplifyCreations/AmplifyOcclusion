@@ -68,14 +68,9 @@ public class MouseLook : MonoBehaviour
 			}
 		}
 
-		// We are grounded, so recalculate move direction directly from axes
-		Vector3 moveDir = new Vector3( Input.GetAxis( "Horizontal" ), 0, Input.GetAxis( "Vertical" ) );
-		moveDir = transform.TransformDirection( moveDir );
-		moveDir *= 10.0f;
-
 		float scale = ( Input.GetKey( KeyCode.LeftShift ) || Input.GetKey( KeyCode.RightShift ) ) ? 150.0f : 50.0f;
-		float forwardSpeed = Input.GetAxis( "Vertical" ) * forwardSpeedScale * scale;
-		float strafeSpeed = Input.GetAxis( "Horizontal" ) * strafeSpeedScale * scale;
+		float forwardSpeed = Input.GetAxis( "Vertical" ) * forwardSpeedScale * scale * Time.smoothDeltaTime;
+		float strafeSpeed = Input.GetAxis( "Horizontal" ) * strafeSpeedScale * scale * Time.smoothDeltaTime;
 		if ( forwardSpeed != 0.0f )
 		{
 			transform.position += transform.forward * forwardSpeed;

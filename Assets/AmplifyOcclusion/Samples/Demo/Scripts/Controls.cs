@@ -49,7 +49,6 @@ public class Controls : MonoBehaviour
 		GUI.color = new Color( GUI.color.r, GUI.color.g, GUI.color.b, 1 );
 
 		Rect r = GUILayoutUtility.GetLastRect();
-
 		float checkSize = style.CalcSize( new GUIContent( " " ) ).y; // decent approximation
 
 		Rect textRect = r;
@@ -87,7 +86,11 @@ public class Controls : MonoBehaviour
 		GUILayout.BeginHorizontal();
 		GUILayout.Space( 5 );
 		GUILayout.BeginVertical();
+
+		GUI.enabled = true;
 		occlusion.enabled = ShadowToggle( occlusion.enabled, "AO Enabled" );
+		GUI.enabled = occlusion.enabled;
+
 		GUILayout.Space( 10 );
 		occlusion.ApplyMethod = ShadowToggle( ( occlusion.ApplyMethod == POST ), "Post Effect" ) ? POST : occlusion.ApplyMethod;
 		occlusion.ApplyMethod = ShadowToggle( ( occlusion.ApplyMethod == DEFERRED ), "Deferred Injection" ) ? DEFERRED : occlusion.ApplyMethod;
@@ -102,52 +105,49 @@ public class Controls : MonoBehaviour
 		GUILayout.BeginHorizontal();
 		GUILayout.BeginVertical();
 		GUILayout.Space( -3 );
-		ShadowLabel( "Intensity", GUILayout.Width( 55 ) );
+		GUILayout.BeginHorizontal();
+		GUILayout.FlexibleSpace();
+		ShadowLabel( "Intensity", GUILayout.Width( 53 ) );
+		GUILayout.EndHorizontal();
 		GUILayout.EndVertical();
 		occlusion.Intensity = GUILayout.HorizontalSlider( occlusion.Intensity, 0.0f, 1.0f, GUILayout.Width( 60 ) );
-		GUILayout.BeginVertical();
-		GUILayout.Space( -3 );
-		GUILayout.Label( " " + occlusion.Intensity.ToString( "0.00" ), GUILayout.Width( 30 ) );
-		GUILayout.EndVertical();
 		GUILayout.Space( 5 );
 		GUILayout.EndHorizontal();
 
 		GUILayout.BeginHorizontal();
 		GUILayout.BeginVertical();
 		GUILayout.Space( -3 );
-		ShadowLabel( "Power", GUILayout.Width( 55 ) );
+		GUILayout.BeginHorizontal();
+		GUILayout.FlexibleSpace();
+		ShadowLabel( "Power", GUILayout.Width( 40 ) );
+		GUILayout.EndHorizontal();
 		GUILayout.EndVertical();
 		occlusion.PowerExponent = GUILayout.HorizontalSlider( occlusion.PowerExponent, 0.0001f, 6.0f, GUILayout.Width( 60 ) );
-		GUILayout.BeginVertical();
-		GUILayout.Space( -3 );
-		GUILayout.Label( " " + occlusion.PowerExponent.ToString( "0.00" ), GUILayout.Width( 30 ) );
-		GUILayout.EndVertical();
 		GUILayout.Space( 5 );
 		GUILayout.EndHorizontal();
 
 		GUILayout.BeginHorizontal();
 		GUILayout.BeginVertical();
 		GUILayout.Space( -3 );
-		ShadowLabel( "Radius", GUILayout.Width( 55 ) );
+		GUILayout.BeginHorizontal();
+		GUILayout.FlexibleSpace();
+		ShadowLabel( "Radius", GUILayout.Width( 43 ) );
+		GUILayout.EndHorizontal();
 		GUILayout.EndVertical();
 		occlusion.Radius = GUILayout.HorizontalSlider( occlusion.Radius, 0.1f, 10.0f, GUILayout.Width( 60 ) );
-		GUILayout.BeginVertical();
-		GUILayout.Space( -3 );
-		GUILayout.Label( " " + occlusion.Radius.ToString( "0.00" ), GUILayout.Width( 30 ) );
-		GUILayout.EndVertical();
+
 		GUILayout.Space( 5 );
 		GUILayout.EndHorizontal();
 
 		GUILayout.BeginHorizontal();
 		GUILayout.BeginVertical();
 		GUILayout.Space( -3 );
-		ShadowLabel( "Quality", GUILayout.Width( 55 ) );
+		GUILayout.BeginHorizontal();
+		GUILayout.FlexibleSpace();
+		ShadowLabel( "Quality", GUILayout.Width( 45 ) );
+		GUILayout.EndHorizontal();
 		GUILayout.EndVertical();
 		occlusion.SampleCount = ( SampleCountLevel ) ( ( int ) GUILayout.HorizontalSlider( ( float ) occlusion.SampleCount, 0.0f, 3.0f, GUILayout.Width( 60 ) ) );
-		GUILayout.BeginVertical();
-		GUILayout.Space( -3 );
-		GUILayout.Label( "   " + ( ( int )occlusion.SampleCount + 1 ), GUILayout.Width( 30 ) );
-		GUILayout.EndVertical();
 		GUILayout.Space( 5 );
 		GUILayout.EndHorizontal();
 
