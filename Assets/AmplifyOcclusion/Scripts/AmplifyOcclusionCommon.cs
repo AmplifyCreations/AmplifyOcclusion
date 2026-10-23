@@ -33,7 +33,7 @@ public static class AmplifyOcclusionCommon
 		{
 			if( throughErrorMsg == true )
 			{
-				Debug.LogErrorFormat( "[AmplifyOcclusion] Cannot find shader: \"{0}\". Please contact support@amplify.pt", shader.name );
+				Debug.LogError( "[AmplifyOcclusion] Cannot find shader. Please contact support@amplify.pt" );
 			}
 			return null;
 		}
